@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<VBox alignment="CENTER" prefHeight="600.0" prefWidth="900.0" spacing="10.0" styleClass="menu-root"
+      stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.maturitni_prace.MenuController">
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+
+   <Label styleClass="menu-title" text="Počítadlo skóre" />
+   <Label styleClass="menu-subtitle" text="Vyber hru a začni zapisovat" />
+
+   <HBox alignment="CENTER" spacing="40.0">
+      <padding>
+         <Insets top="40.0" />
+      </padding>
+
+      <Button contentDisplay="GRAPHIC_ONLY" onAction="#openDarts" styleClass="game-card">
+         <graphic>
+            <VBox alignment="CENTER" spacing="14.0">
+               <StackPane prefHeight="120.0" prefWidth="120.0">
+                  <Circle fill="#14213d" radius="60.0" stroke="#f1faee" strokeWidth="2.0" />
+                  <Circle fill="#e63946" radius="48.0" />
+                  <Circle fill="#f1faee" radius="37.0" />
+                  <Circle fill="#e63946" radius="24.0" />
+                  <Circle fill="#14213d" radius="11.0" />
+               </StackPane>
+               <Label styleClass="card-title" text="Šipky" />
+               <Label styleClass="card-desc" text="121 · 301 · 501 " />
+            </VBox>
+         </graphic>
+      </Button>
+
+      <Button contentDisplay="GRAPHIC_ONLY" onAction="#openBowling" styleClass="game-card">
+         <graphic>
+            <VBox alignment="CENTER" spacing="14.0">
+               <ImageView fitHeight="120.0" fitWidth="120.0" preserveRatio="true">
+                  <image>
+                     <Image url="@kuzelka.png" />
+                  </image>
+               </ImageView>
+               <Label styleClass="card-title" text="Kuželky" />
+               <Label styleClass="card-desc" text="Série hodů · 9 kuželek" />
+            </VBox>
+         </graphic>
+      </Button>
+   </HBox>
+</VBox>
+
