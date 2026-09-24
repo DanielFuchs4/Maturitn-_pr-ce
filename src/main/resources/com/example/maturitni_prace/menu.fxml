@@ -25,7 +25,7 @@
          <Insets top="40.0" />
       </padding>
 
-      <Button contentDisplay="GRAPHIC_ONLY" onAction="#openDarts" styleClass="game-card">
+      <Button contentDisplay="GRAPHIC_ONLY" onAction="#sipky" styleClass="game-card">
          <graphic>
             <VBox alignment="CENTER" spacing="14.0">
                <StackPane prefHeight="120.0" prefWidth="120.0">
@@ -41,7 +41,7 @@
          </graphic>
       </Button>
 
-      <Button contentDisplay="GRAPHIC_ONLY" onAction="#openBowling" styleClass="game-card">
+      <Button contentDisplay="GRAPHIC_ONLY" onAction="#kuzelky" styleClass="game-card">
          <graphic>
             <VBox alignment="CENTER" spacing="14.0">
                <ImageView fitHeight="120.0" fitWidth="120.0" preserveRatio="true">

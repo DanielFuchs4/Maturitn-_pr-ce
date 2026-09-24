@@ -4,12 +4,13 @@ import javafx.fxml.FXML;
 public class MenuController {
 
     @FXML
-    private void openDarts() {
-        MainApplication.show("darts.fxml");
+    private void sipky() {
+        MainApplication.show("sipky.fxml");
     }
 
     @FXML
-    private void openBowling() {
-        MainApplication.show("bowling.fxml");
+    private void kuzelky() {
+        MainApplication.show("kuzelky.fxml");
     }
+
 }

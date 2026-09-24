@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-/** Šipky: odečítání od 301/501/701. Zadává se součet za kolo (3 šipky). */
 public class SipkyController {
 
     public static class Row {
@@ -22,7 +21,7 @@ public class SipkyController {
         int lastScore;
         int totalScored;
         int roundscount;
-        final Deque<Integer> history = new ArrayDeque<>(); // odečtené body (0 = přehození)
+        final Deque<Integer> history = new ArrayDeque<>();
 
         Row(String name, int start) {
             this.name = name;
@@ -51,7 +50,6 @@ public class SipkyController {
     @FXML
     private TableColumn<Row, String> colName, colRemaining, colLast, colAvg, colTurns;
 
-    // --- stav hry ---
     private final List<String> players = new ArrayList<>();
     private final ObservableList<Row> rows = FXCollections.observableArrayList();
     private final Deque<Integer> playerOrder = new ArrayDeque<>(); // pro tlačítko Zpět
@@ -65,8 +63,7 @@ public class SipkyController {
 
         colName.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().name));
         colRemaining.setCellValueFactory(d -> new SimpleStringProperty(String.valueOf(d.getValue().remaining)));
-        colLast.setCellValueFactory(d -> new SimpleStringProperty(
-                d.getValue().turns == 0 ? "-" : String.valueOf(d.getValue().lastScore)));
+        colLast.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().turns == 0 ? "-" : String.valueOf(d.getValue().lastScore)));
         colAvg.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().average()));
         colTurns.setCellValueFactory(d -> new SimpleStringProperty(String.valueOf(d.getValue().turns)));
 
