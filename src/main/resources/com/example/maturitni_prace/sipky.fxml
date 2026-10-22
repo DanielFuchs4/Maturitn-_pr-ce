@@ -5,33 +5,34 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="600.0" prefWidth="900.0"
+<BorderPane prefHeight="630.0" prefWidth="900.0" style="-fx-background-color: #3d637f;"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.maturitni_prace.SipkyController">
    <padding>
-      <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+      <Insets bottom="20.0" left="30.0" right="30.0" top="15.0" />
    </padding>
    <top>
       <HBox alignment="CENTER_LEFT" spacing="20.0" BorderPane.alignment="CENTER">
          <padding>
-            <Insets bottom="15.0" />
+            <Insets bottom="12.0" />
          </padding>
          <Button onAction="#onBack" text="← Menu" />
-         <Label fx:id="titleLabel" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Šipky" />
+         <Label fx:id="titleLabel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;" text="Šipky" />
       </HBox>
    </top>
    <center>
       <StackPane BorderPane.alignment="CENTER">
 
-         <VBox fx:id="setupBox" maxWidth="500.0" spacing="10.0" StackPane.alignment="TOP_CENTER">
+         <!-- ===== NASTAVENÍ HRY ===== -->
+         <VBox fx:id="setupBox" maxWidth="500.0" spacing="10.0" style="-fx-background-color: #264153; -fx-background-radius: 12;" StackPane.alignment="TOP_CENTER">
             <padding>
                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
             </padding>
@@ -42,43 +43,75 @@
             </HBox>
             <ListView fx:id="playerList" prefHeight="200.0" />
             <HBox alignment="CENTER_LEFT" spacing="10.0">
-               <Label text="Hra na:" />
+               <Label style="-fx-text-fill: white; -fx-font-size: 15px;" text="Hra na:" />
                <ComboBox fx:id="modeBox" />
             </HBox>
             <Button onAction="#onStart" style="-fx-font-size: 16px;" text="Začít hru" />
          </VBox>
 
-         <BorderPane fx:id="gameBox" visible="false">
-            <center>
-               <TableView fx:id="table" fixedCellSize="40.0" style="-fx-font-size: 16px;">
-                  <columns>
-                     <TableColumn fx:id="colName" prefWidth="200.0" sortable="false" text="Hráč" />
-                     <TableColumn fx:id="colRemaining" prefWidth="100.0" sortable="false" text="Zbývá" />
-                     <TableColumn fx:id="colLast" prefWidth="120.0" sortable="false" text="Poslední kolo" />
-                     <TableColumn fx:id="colAvg" prefWidth="120.0" sortable="false" text="Průměr/kolo" />
-                     <TableColumn fx:id="colTurns" prefWidth="60.0" sortable="false" text="Kol" />
-                  </columns>
-                  <columnResizePolicy>
-                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                  </columnResizePolicy>
-               </TableView>
-            </center>
-            <bottom>
-               <VBox spacing="10.0" BorderPane.alignment="CENTER">
+         <!-- ===== HRA ===== -->
+         <HBox fx:id="gameBox" visible="false">
+            <!-- levý panel -->
+            <VBox alignment="TOP_CENTER" prefWidth="650.0" style="-fx-background-color: #264153;" HBox.hgrow="ALWAYS">
+               <padding>
+                  <Insets bottom="10.0" left="40.0" right="40.0" top="5.0" />
+               </padding>
+               <Label fx:id="roundLabel" style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: white;" text="Kolo: 1" />
+               <HBox fx:id="othersBox" alignment="CENTER" maxWidth="510.0" spacing="40.0" style="-fx-background-color: white; -fx-background-radius: 10;">
                   <padding>
-                     <Insets top="15.0" />
+                     <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
                   </padding>
-                  <Label fx:id="currentLabel" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Na řadě:" />
-                  <HBox alignment="CENTER_LEFT" spacing="10.0">
-                     <TextField fx:id="scoreField" onAction="#onSubmit" prefWidth="200.0" promptText="Body za kolo (0–180)" />
-                     <Button defaultButton="true" onAction="#onSubmit" text="Potvrdit" />
-                     <Button onAction="#onUndo" text="↶ Zpět" />
-                     <Button onAction="#onNewGame" text="Nová hra" />
-                  </HBox>
-                  <Label fx:id="infoLabel" style="-fx-text-fill: #b00020;" />
-               </VBox>
-            </bottom>
-         </BorderPane>
+                  <VBox.margin>
+                     <Insets top="8.0" />
+                  </VBox.margin>
+               </HBox>
+               <Region VBox.vgrow="ALWAYS" />
+               <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #8fb8d9; -fx-padding: 3 14 3 14; -fx-border-color: #8fb8d9; -fx-border-radius: 12; -fx-background-radius: 12;" text="NA ŘADĚ" />
+               <Label fx:id="currentLabel" style="-fx-font-size: 64px; -fx-font-weight: bold; -fx-text-fill: white;" text="Hráč" />
+               <Label fx:id="remainingLabel" style="-fx-font-size: 150px; -fx-text-fill: white;" text="301" />
+               <Region VBox.vgrow="ALWAYS" />
+               <HBox alignment="CENTER" spacing="70.0">
+                  <VBox alignment="TOP_CENTER" prefHeight="160.0" prefWidth="200.0" spacing="12.0" style="-fx-background-color: #d9d9d9; -fx-background-radius: 10;">
+                     <padding>
+                        <Insets top="12.0" />
+                     </padding>
+                     <Label style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #00345a;" text="Průměr" />
+                     <Label fx:id="avgLabel" style="-fx-font-size: 44px; -fx-text-fill: #00345a;" text="-" />
+                  </VBox>
+                  <VBox alignment="TOP_CENTER" prefHeight="160.0" prefWidth="200.0" spacing="12.0" style="-fx-background-color: #d9d9d9; -fx-background-radius: 10;">
+                     <padding>
+                        <Insets top="12.0" />
+                     </padding>
+                     <Label style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #00345a;" text="Poslední hod" />
+                     <Label fx:id="lastLabel" style="-fx-font-size: 44px; -fx-text-fill: #00345a;" text="-" />
+                  </VBox>
+               </HBox>
+            </VBox>
+
+            <!-- pravý panel -->
+            <VBox alignment="CENTER_LEFT" prefWidth="520.0" spacing="8.0" style="-fx-background-color: #00345a;" HBox.hgrow="ALWAYS">
+               <padding>
+                  <Insets left="50.0" right="50.0" />
+               </padding>
+               <Label style="-fx-font-size: 22px; -fx-text-fill: white;" text="Zadej scóre:" />
+               <TextField fx:id="scoreField" onAction="#onSubmit" promptText="0–180"
+                          style="-fx-background-color: #d9d9d9; -fx-background-radius: 8; -fx-font-size: 22px; -fx-pref-height: 50;" />
+               <Button defaultButton="true" maxWidth="Infinity" onAction="#onSubmit"
+                       style="-fx-background-color: #d9d9d9; -fx-background-radius: 8; -fx-font-size: 20px; -fx-font-weight: bold; -fx-pref-height: 46;" text="Potvrdit">
+                  <VBox.margin>
+                     <Insets top="20.0" />
+                  </VBox.margin>
+               </Button>
+               <Label fx:id="infoLabel" style="-fx-text-fill: #ffb4b4; -fx-font-size: 15px;" wrapText="true" />
+               <HBox spacing="10.0">
+                  <VBox.margin>
+                     <Insets top="30.0" />
+                  </VBox.margin>
+                  <Button onAction="#onUndo" text="↶ Zpět" />
+                  <Button onAction="#onNewGame" text="Nová hra" />
+               </HBox>
+            </VBox>
+         </HBox>
       </StackPane>
    </center>
 </BorderPane>
