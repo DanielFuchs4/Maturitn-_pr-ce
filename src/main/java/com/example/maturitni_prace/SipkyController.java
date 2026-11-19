@@ -20,7 +20,8 @@ public class SipkyController {
         int turns;
         int lastScore;
         int totalScored;
-        int roundscount;
+        int attempts;  // počet využitých pokusů v režimu 121 (max 3)
+        int checkouts; // počet úspěšných zavření 121
         final Deque<Integer> history = new ArrayDeque<>();
 
         Row(String name, int start) {
@@ -33,8 +34,30 @@ public class SipkyController {
         }
     }
 
+    private static class TurnSnapshot {
+        final int playerIndex;
+        final int prevRemaining;
+        final int prevLastScore;
+        final int prevTotalScored;
+        final int prevTurns;
+        final int prevAttempts;
+        final int prevCheckouts;
+
+        TurnSnapshot(int playerIndex, Row r) {
+            this.playerIndex = playerIndex;
+            this.prevRemaining = r.remaining;
+            this.prevLastScore = r.lastScore;
+            this.prevTotalScored = r.totalScored;
+            this.prevTurns = r.turns;
+            this.prevAttempts = r.attempts;
+            this.prevCheckouts = r.checkouts;
+        }
+    }
+
     @FXML
-    private Label titleLabel, currentLabel, infoLabel, roundLabel, remainingLabel, avgLabel, lastLabel;
+    private Label titleLabel, currentLabel, attemptsLabel, checkoutsLabel, infoLabel, roundLabel, remainingLabel, avgLabel, lastLabel;
+    @FXML
+    private HBox checkoutsBox;
     @FXML
     private VBox setupBox;
     @FXML
@@ -48,7 +71,7 @@ public class SipkyController {
 
     private final List<String> players = new ArrayList<>();
     private final List<Row> rows = new ArrayList<>();
-    private final Deque<Integer> playerOrder = new ArrayDeque<>(); // pro tlačítko Zpět
+    private final Deque<TurnSnapshot> undoStack = new ArrayDeque<>();
     private int current = 0;
     private boolean finished = false;
 
@@ -91,11 +114,13 @@ public class SipkyController {
         }
         int start = modeBox.getValue();
         rows.clear();
-        playerOrder.clear();
-        for (String p : players) rows.add(new Row(p, start));
+        undoStack.clear();
+        for (String p : players) {
+            rows.add(new Row(p, start));
+        }
         current = 0;
         finished = false;
-        infoLabel.setText("");
+        setInfoError("");
         titleLabel.setText("🎯 Šipky – " + start);
         setupBox.setVisible(false);
         setupBox.setManaged(false);
@@ -117,51 +142,65 @@ public class SipkyController {
         try {
             score = Integer.parseInt(scoreField.getText().trim());
         } catch (NumberFormatException ex) {
-            infoLabel.setText("Zadej celé číslo.");
+            setInfoError("Zadej celé číslo.");
             return;
         }
         if (score < 0 || score > 180) {
-            infoLabel.setText("Za jedno kolo lze získat 0–180 bodů.");
+            setInfoError("Za jedno kolo lze získat 0–180 bodů.");
             return;
         }
 
+        int start = modeBox.getValue();
         Row r = rows.get(current);
+        undoStack.push(new TurnSnapshot(current, r));
+
         int after = r.remaining - score;
         int applied;
-        if (after < 0 || after == 1) {
+        boolean busted = (after < 0 || after == 1);
+
+        if (busted) {
             applied = 0; // přehození – kolo se nezapočítá
-            infoLabel.setText(r.name + " přehodil – kolo se nezapočítává.");
+            setInfoError(r.name + " přehodil – kolo se nezapočítává.");
         } else {
             applied = score;
-            infoLabel.setText("");
+            setInfoError("");
             r.remaining = after;
         }
+
         r.history.push(applied);
         r.lastScore = applied;
         r.totalScored += applied;
-        if (modeBox.getValue() != 121) {
-            r.turns++;
-        } else {
-            r.roundscount++;
-        }
-        int start = modeBox.getValue();
-        if (start == 121 && r.roundscount == 3) {
-            r.remaining = 121;
-            r.lastScore = 0;
-            r.totalScored = 0;
-            r.turns++;
-            r.roundscount = 0;
-        }
-        playerOrder.push(current);
+        r.turns++;
+        r.attempts++;
         scoreField.clear();
 
+        // Hráč dosáhl přesně 0
         if (r.remaining == 0) {
-            finished = true;
-            refresh();
-            new Alert(Alert.AlertType.INFORMATION,
-                    "Vyhrál " + r.name + " za " + r.turns + " kol! 🎉").showAndWait();
-            return;
+            if (start == 121) {
+                r.checkouts++;
+                r.remaining = 121;
+                r.attempts = 0;
+                setInfoSuccess("🎯 " + r.name + " zavřel 121! (Zavřeno: " + r.checkouts + "×)");
+                current = (current + 1) % rows.size();
+                refresh();
+                scoreField.requestFocus();
+                return;
+            } else {
+                finished = true;
+                refresh();
+                new Alert(Alert.AlertType.INFORMATION,
+                        "Vyhrál " + r.name + " za " + r.turns + " kol! 🎉").showAndWait();
+                return;
+            }
         }
+
+        // Pravidlo pro 121: max 3 pokusy, jinak reset zpět na 121
+        if (start == 121 && r.attempts >= 3) {
+            r.remaining = 121;
+            r.attempts = 0;
+            setInfoError(r.name + " nestihl 121 na 3 pokusy – začíná znovu od 121!");
+        }
+
         current = (current + 1) % rows.size();
         refresh();
         scoreField.requestFocus();
@@ -169,18 +208,37 @@ public class SipkyController {
 
     @FXML
     private void onUndo() {
-        if (playerOrder.isEmpty()) return;
-        int idx = playerOrder.pop();
-        Row r = rows.get(idx);
-        int applied = r.history.pop();
-        r.remaining += applied;
-        r.totalScored -= applied;
-        r.turns--;
-        r.lastScore = r.history.isEmpty() ? 0 : r.history.peek();
-        current = idx;
+        if (undoStack.isEmpty()) return;
+        TurnSnapshot snap = undoStack.pop();
+        Row r = rows.get(snap.playerIndex);
+
+        if (!r.history.isEmpty()) {
+            r.history.pop();
+        }
+        r.remaining = snap.prevRemaining;
+        r.lastScore = snap.prevLastScore;
+        r.totalScored = snap.prevTotalScored;
+        r.turns = snap.prevTurns;
+        r.attempts = snap.prevAttempts;
+        r.checkouts = snap.prevCheckouts;
+
+        current = snap.playerIndex;
         finished = false;
-        infoLabel.setText("");
+        setInfoError("");
         refresh();
+        scoreField.requestFocus();
+    }
+
+    private void setInfoError(String msg) {
+        infoLabel.getStyleClass().remove("ng-info-success");
+        infoLabel.setText(msg);
+    }
+
+    private void setInfoSuccess(String msg) {
+        if (!infoLabel.getStyleClass().contains("ng-info-success")) {
+            infoLabel.getStyleClass().add("ng-info-success");
+        }
+        infoLabel.setText(msg);
     }
 
     private void showSetup() {
@@ -193,9 +251,10 @@ public class SipkyController {
 
     private void refresh() {
         Row r = rows.get(current);
+        boolean is121 = modeBox.getValue() != null && modeBox.getValue() == 121;
 
         // číslo kola = kolikátý celý průchod všemi hráči se právě hraje
-        int round = playerOrder.size() / rows.size() + 1;
+        int round = undoStack.size() / rows.size() + 1;
         roundLabel.setText("Kolo: " + round);
 
         currentLabel.setText(finished ? "Vyhrál " + r.name : r.name);
@@ -203,17 +262,42 @@ public class SipkyController {
         avgLabel.setText(r.average());
         lastLabel.setText(r.history.isEmpty() ? "-" : String.valueOf(r.lastScore));
 
+        // počítadlo zavření nad políčkem pro skóre (režim 121)
+        checkoutsBox.setVisible(is121);
+        checkoutsBox.setManaged(is121);
+        if (is121) {
+            checkoutsLabel.setText(r.checkouts + "×");
+        }
+
+        // ukazatel pokusů pro režim 121
+        attemptsLabel.setVisible(is121 && !finished);
+        attemptsLabel.setManaged(is121 && !finished);
+        if (is121 && !finished) {
+            int currentAttempt = r.attempts + 1;
+            if (currentAttempt == 3) {
+                attemptsLabel.setText("Pokus: 3 / 3 (poslední!)");
+                attemptsLabel.setStyle("-fx-text-fill: #ff758f; -fx-border-color: rgba(255, 117, 143, 0.55); -fx-background-color: rgba(255, 117, 143, 0.16);");
+            } else {
+                attemptsLabel.setText("Pokus: " + currentAttempt + " / 3");
+                attemptsLabel.setStyle("");
+            }
+        }
+
         // ostatní hráči v pořadí, v jakém půjdou na řadu
         othersBox.getChildren().clear();
         for (int i = 1; i < rows.size(); i++) {
             Row o = rows.get((current + i) % rows.size());
-            Label name = new Label(o.name);
+            String headerText = is121
+                    ? o.name + " (" + (o.attempts + 1) + "/3) ·  " + o.checkouts + "×"
+                    : o.name;
+            Label name = new Label(headerText);
             Label rem = new Label(String.valueOf(o.remaining));
-            String style = "-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: black;";
-            name.setStyle(style);
-            rem.setStyle(style);
+            name.getStyleClass().add("ng-other-name");
+            rem.getStyleClass().add("ng-other-score");
+
             VBox box = new VBox(2, name, rem);
             box.setAlignment(Pos.CENTER);
+            box.getStyleClass().add("ng-other-card");
             othersBox.getChildren().add(box);
         }
         boolean hasOthers = rows.size() > 1;

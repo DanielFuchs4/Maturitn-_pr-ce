@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
@@ -8,110 +9,183 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Priority?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.SVGPath?>
 
-<BorderPane prefHeight="630.0" prefWidth="900.0" style="-fx-background-color: #3d637f;"
+<BorderPane prefHeight="760.0" prefWidth="1200.0" styleClass="ng-root" stylesheets="@sipky.css"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.maturitni_prace.SipkyController">
-   <padding>
-      <Insets bottom="20.0" left="30.0" right="30.0" top="15.0" />
-   </padding>
-   <top>
-      <HBox alignment="CENTER_LEFT" spacing="20.0" BorderPane.alignment="CENTER">
-         <padding>
-            <Insets bottom="12.0" />
-         </padding>
-         <Button onAction="#onBack" text="← Menu" />
-         <Label fx:id="titleLabel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;" text="Šipky" />
-      </HBox>
-   </top>
+
    <center>
       <StackPane BorderPane.alignment="CENTER">
 
-         <!-- ===== NASTAVENÍ HRY ===== -->
-         <VBox fx:id="setupBox" maxWidth="500.0" spacing="10.0" style="-fx-background-color: #264153; -fx-background-radius: 12;" StackPane.alignment="TOP_CENTER">
+         <!-- dekorativní terče po stranách -->
+         <Circle mouseTransparent="true" radius="280.0" styleClass="ng-deco-circle" StackPane.alignment="CENTER_LEFT" translateX="-200.0" />
+         <Circle mouseTransparent="true" radius="200.0" styleClass="ng-deco-circle-inner" StackPane.alignment="CENTER_LEFT" translateX="-120.0" />
+         <Circle mouseTransparent="true" radius="280.0" styleClass="ng-deco-circle" StackPane.alignment="CENTER_RIGHT" translateX="200.0" />
+         <Circle mouseTransparent="true" radius="200.0" styleClass="ng-deco-circle-inner" StackPane.alignment="CENTER_RIGHT" translateX="120.0" />
+
+         <!-- NASTAVENÍ HRY -->
+         <VBox fx:id="setupBox" alignment="TOP_CENTER" maxWidth="1100.0" spacing="22.0">
             <padding>
-               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
             </padding>
-            <HBox spacing="10.0">
-               <TextField fx:id="nameField" onAction="#onAddPlayer" promptText="Jméno hráče" />
-               <Button onAction="#onAddPlayer" text="Přidat" />
-               <Button onAction="#onRemovePlayer" text="Odebrat vybraného" />
+
+            <HBox alignment="CENTER" spacing="14.0">
+               <TextField fx:id="nameField" onAction="#onAddPlayer" prefHeight="62.0" prefWidth="340.0"
+                          promptText="✎   Jméno hráče" styleClass="ng-name-field" />
+               <Button onAction="#onAddPlayer" prefHeight="62.0" styleClass="ng-secondary-button" text="＋   Přidat" />
+               <Button onAction="#onRemovePlayer" prefHeight="62.0" styleClass="ng-secondary-button" text="✕   Odebrat vybraného" />
             </HBox>
-            <ListView fx:id="playerList" prefHeight="200.0" />
-            <HBox alignment="CENTER_LEFT" spacing="10.0">
-               <Label style="-fx-text-fill: white; -fx-font-size: 15px;" text="Hra na:" />
-               <ComboBox fx:id="modeBox" />
+
+            <VBox spacing="12.0" styleClass="ng-panel" VBox.vgrow="ALWAYS">
+               <padding>
+                  <Insets bottom="18.0" left="22.0" right="22.0" top="14.0" />
+               </padding>
+               <HBox alignment="CENTER_LEFT" spacing="14.0">
+                  <Label styleClass="ng-panel-icon" text="👥" />
+                  <Label styleClass="ng-panel-title" text="Hráči" />
+                  <Region styleClass="ng-panel-line" HBox.hgrow="ALWAYS" />
+               </HBox>
+
+               <ListView fx:id="playerList" styleClass="ng-list" VBox.vgrow="ALWAYS">
+                  <placeholder>
+                     <VBox alignment="CENTER" spacing="12.0">
+                        <Label styleClass="ng-empty-icon" text="🎯" />
+                        <Label styleClass="ng-empty-text" text="Žádní hráči zatím nejsou přidáni." />
+                     </VBox>
+                  </placeholder>
+               </ListView>
+            </VBox>
+
+            <HBox alignment="CENTER_LEFT" spacing="14.0" styleClass="ng-panel">
+               <padding>
+                  <Insets bottom="14.0" left="22.0" right="14.0" top="14.0" />
+               </padding>
+               <Label styleClass="ng-panel-icon" text="◎" />
+               <Label styleClass="ng-label" text="Hra na:" />
+               <ComboBox fx:id="modeBox" prefHeight="58.0" prefWidth="200.0" styleClass="ng-combo" />
+               <Region HBox.hgrow="ALWAYS" />
+               <Button onAction="#onStart" prefHeight="62.0" prefWidth="320.0"
+                       styleClass="ng-start-button" text="▶   Začít hru" />
             </HBox>
-            <Button onAction="#onStart" style="-fx-font-size: 16px;" text="Začít hru" />
          </VBox>
 
-         <!-- ===== HRA ===== -->
-         <HBox fx:id="gameBox" visible="false">
+         <!-- PROBÍHAJÍCÍ HRA -->
+         <HBox fx:id="gameBox" managed="false" maxWidth="1500.0" spacing="24.0" visible="false">
+            <padding>
+               <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+            </padding>
+
             <!-- levý panel -->
-            <VBox alignment="TOP_CENTER" prefWidth="650.0" style="-fx-background-color: #264153;" HBox.hgrow="ALWAYS">
+            <VBox alignment="TOP_CENTER" spacing="16.0" styleClass="ng-game-panel" HBox.hgrow="ALWAYS">
                <padding>
-                  <Insets bottom="10.0" left="40.0" right="40.0" top="5.0" />
+                  <Insets bottom="26.0" left="30.0" right="30.0" top="22.0" />
                </padding>
-               <Label fx:id="roundLabel" style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: white;" text="Kolo: 1" />
-               <HBox fx:id="othersBox" alignment="CENTER" maxWidth="510.0" spacing="40.0" style="-fx-background-color: white; -fx-background-radius: 10;">
-                  <padding>
-                     <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
-                  </padding>
-                  <VBox.margin>
-                     <Insets top="8.0" />
-                  </VBox.margin>
+
+               <HBox alignment="CENTER" spacing="24.0">
+                  <Region styleClass="ng-round-line" HBox.hgrow="ALWAYS" />
+                  <Label fx:id="roundLabel" styleClass="ng-round-big" text="Kolo: 1" />
+                  <Region styleClass="ng-round-line" HBox.hgrow="ALWAYS" />
                </HBox>
+
+               <HBox fx:id="othersBox" alignment="CENTER" maxWidth="Infinity" spacing="16.0" />
+
                <Region VBox.vgrow="ALWAYS" />
-               <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #8fb8d9; -fx-padding: 3 14 3 14; -fx-border-color: #8fb8d9; -fx-border-radius: 12; -fx-background-radius: 12;" text="NA ŘADĚ" />
-               <Label fx:id="currentLabel" style="-fx-font-size: 64px; -fx-font-weight: bold; -fx-text-fill: white;" text="Hráč" />
-               <Label fx:id="remainingLabel" style="-fx-font-size: 150px; -fx-text-fill: white;" text="301" />
+               <Label fx:id="currentLabel" styleClass="ng-current-name-big" text="Hráč 1" />
+               <Label fx:id="attemptsLabel" managed="false" styleClass="ng-attempts-badge" text="Pokus: 1 / 3" visible="false" />
+               <Label fx:id="remainingLabel" styleClass="ng-remaining" text="301" />
                <Region VBox.vgrow="ALWAYS" />
-               <HBox alignment="CENTER" spacing="70.0">
-                  <VBox alignment="TOP_CENTER" prefHeight="160.0" prefWidth="200.0" spacing="12.0" style="-fx-background-color: #d9d9d9; -fx-background-radius: 10;">
-                     <padding>
-                        <Insets top="12.0" />
-                     </padding>
-                     <Label style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #00345a;" text="Průměr" />
-                     <Label fx:id="avgLabel" style="-fx-font-size: 44px; -fx-text-fill: #00345a;" text="-" />
+
+               <HBox alignment="CENTER" spacing="20.0">
+                  <VBox alignment="CENTER" spacing="4.0" styleClass="ng-stat-card" HBox.hgrow="ALWAYS">
+                     <Label styleClass="ng-stat-caption" text="Průměr" />
+                     <Label fx:id="avgLabel" styleClass="ng-stat-value" text="-" />
                   </VBox>
-                  <VBox alignment="TOP_CENTER" prefHeight="160.0" prefWidth="200.0" spacing="12.0" style="-fx-background-color: #d9d9d9; -fx-background-radius: 10;">
-                     <padding>
-                        <Insets top="12.0" />
-                     </padding>
-                     <Label style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #00345a;" text="Poslední hod" />
-                     <Label fx:id="lastLabel" style="-fx-font-size: 44px; -fx-text-fill: #00345a;" text="-" />
+                  <VBox alignment="CENTER" spacing="4.0" styleClass="ng-stat-card" HBox.hgrow="ALWAYS">
+                     <Label styleClass="ng-stat-caption" text="Poslední hod" />
+                     <Label fx:id="lastLabel" styleClass="ng-stat-value" text="-" />
                   </VBox>
                </HBox>
             </VBox>
 
             <!-- pravý panel -->
-            <VBox alignment="CENTER_LEFT" prefWidth="520.0" spacing="8.0" style="-fx-background-color: #00345a;" HBox.hgrow="ALWAYS">
+            <VBox alignment="TOP_CENTER" minWidth="380.0" prefWidth="480.0" spacing="14.0" styleClass="ng-score-panel">
                <padding>
-                  <Insets left="50.0" right="50.0" />
+                  <Insets bottom="26.0" left="36.0" right="36.0" top="26.0" />
                </padding>
-               <Label style="-fx-font-size: 22px; -fx-text-fill: white;" text="Zadej scóre:" />
-               <TextField fx:id="scoreField" onAction="#onSubmit" promptText="0–180"
-                          style="-fx-background-color: #d9d9d9; -fx-background-radius: 8; -fx-font-size: 22px; -fx-pref-height: 50;" />
-               <Button defaultButton="true" maxWidth="Infinity" onAction="#onSubmit"
-                       style="-fx-background-color: #d9d9d9; -fx-background-radius: 8; -fx-font-size: 20px; -fx-font-weight: bold; -fx-pref-height: 46;" text="Potvrdit">
+
+               <!-- ikona 3 realistických šipek -->
+               <StackPane maxHeight="155.0" minHeight="155.0" prefHeight="155.0">
+                  <Group rotate="-22.0" translateX="-64.0">
+                     <SVGPath content="M 0,4 L 18,16 L 15,44 L 0,36 L -15,44 L -18,16 Z" fill="#1e7bff" stroke="#bae6fd" strokeWidth="1.2" styleClass="ng-dart-flight" />
+                     <SVGPath content="M 0,2 L 4,14 L 3,42 L 0,38 L -3,42 L -4,14 Z" fill="#4cc9f0" styleClass="ng-dart-rib" />
+                     <SVGPath content="M -2.2,38 L 2.2,38 L 2.8,62 L -2.8,62 Z" fill="#1e3a8a" stroke="#60a5fa" strokeWidth="0.9" styleClass="ng-dart-shaft" />
+                     <SVGPath content="M -4.5,62 L 4.5,62 L 3.8,104 L -3.8,104 Z" fill="#cbd5e1" stroke="#ffffff" strokeWidth="0.8" styleClass="ng-dart-barrel" />
+                     <SVGPath content="M -4.4,69 L 4.4,69 M -4.3,75 L 4.3,75 M -4.2,81 L 4.2,81 M -4.1,87 L 4.1,87 M -4.0,93 L 4.0,93" stroke="#1e293b" strokeWidth="1.4" styleClass="ng-dart-grip" />
+                     <SVGPath content="M -1.5,104 L 1.5,104 L 0,138 Z" fill="#f8fafc" styleClass="ng-dart-tip" />
+                  </Group>
+
+                  <Group translateY="-4.0">
+                     <SVGPath content="M 0,4 L 18,16 L 15,44 L 0,36 L -15,44 L -18,16 Z" fill="#1e7bff" stroke="#bae6fd" strokeWidth="1.2" styleClass="ng-dart-flight" />
+                     <SVGPath content="M 0,2 L 4,14 L 3,42 L 0,38 L -3,42 L -4,14 Z" fill="#4cc9f0" styleClass="ng-dart-rib" />
+                     <SVGPath content="M -2.2,38 L 2.2,38 L 2.8,62 L -2.8,62 Z" fill="#1e3a8a" stroke="#60a5fa" strokeWidth="0.9" styleClass="ng-dart-shaft" />
+                     <SVGPath content="M -4.5,62 L 4.5,62 L 3.8,104 L -3.8,104 Z" fill="#cbd5e1" stroke="#ffffff" strokeWidth="0.8" styleClass="ng-dart-barrel" />
+                     <SVGPath content="M -4.4,69 L 4.4,69 M -4.3,75 L 4.3,75 M -4.2,81 L 4.2,81 M -4.1,87 L 4.1,87 M -4.0,93 L 4.0,93" stroke="#1e293b" strokeWidth="1.4" styleClass="ng-dart-grip" />
+                     <SVGPath content="M -1.5,104 L 1.5,104 L 0,138 Z" fill="#f8fafc" styleClass="ng-dart-tip" />
+                  </Group>
+
+                  <Group rotate="22.0" translateX="64.0">
+                     <SVGPath content="M 0,4 L 18,16 L 15,44 L 0,36 L -15,44 L -18,16 Z" fill="#1e7bff" stroke="#bae6fd" strokeWidth="1.2" styleClass="ng-dart-flight" />
+                     <SVGPath content="M 0,2 L 4,14 L 3,42 L 0,38 L -3,42 L -4,14 Z" fill="#4cc9f0" styleClass="ng-dart-rib" />
+                     <SVGPath content="M -2.2,38 L 2.2,38 L 2.8,62 L -2.8,62 Z" fill="#1e3a8a" stroke="#60a5fa" strokeWidth="0.9" styleClass="ng-dart-shaft" />
+                     <SVGPath content="M -4.5,62 L 4.5,62 L 3.8,104 L -3.8,104 Z" fill="#cbd5e1" stroke="#ffffff" strokeWidth="0.8" styleClass="ng-dart-barrel" />
+                     <SVGPath content="M -4.4,69 L 4.4,69 M -4.3,75 L 4.3,75 M -4.2,81 L 4.2,81 M -4.1,87 L 4.1,87 M -4.0,93 L 4.0,93" stroke="#1e293b" strokeWidth="1.4" styleClass="ng-dart-grip" />
+                     <SVGPath content="M -1.5,104 L 1.5,104 L 0,138 Z" fill="#f8fafc" styleClass="ng-dart-tip" />
+                  </Group>
+               </StackPane>
+               <Region maxWidth="Infinity" styleClass="ng-glow-line" />
+
+               <Region VBox.vgrow="ALWAYS" />
+
+               <!-- počítadlo zavřených 121 nad políčkem skóre -->
+               <HBox fx:id="checkoutsBox" alignment="CENTER" managed="false" spacing="12.0" styleClass="ng-checkouts-card" visible="false">
+                  <Label styleClass="ng-checkouts-caption" text="🏆 Zavřeno 121:" />
+                  <Label fx:id="checkoutsLabel" styleClass="ng-checkouts-value" text="0×" />
+               </HBox>
+
+               <VBox alignment="CENTER_LEFT" spacing="12.0">
+                  <Label styleClass="ng-score-caption" text="Zadej skóre:" />
+                  <TextField fx:id="scoreField" onAction="#onSubmit" prefHeight="84.0" promptText="Např. 60" styleClass="ng-score-field" />
+               </VBox>
+               <Button defaultButton="true" maxWidth="Infinity" onAction="#onSubmit" prefHeight="80.0" styleClass="ng-confirm-button" text="Potvrdit">
                   <VBox.margin>
-                     <Insets top="20.0" />
+                     <Insets top="16.0" />
                   </VBox.margin>
                </Button>
-               <Label fx:id="infoLabel" style="-fx-text-fill: #ffb4b4; -fx-font-size: 15px;" wrapText="true" />
-               <HBox spacing="10.0">
-                  <VBox.margin>
-                     <Insets top="30.0" />
-                  </VBox.margin>
-                  <Button onAction="#onUndo" text="↶ Zpět" />
-                  <Button onAction="#onNewGame" text="Nová hra" />
+               <Label fx:id="infoLabel" alignment="CENTER" maxWidth="Infinity" styleClass="ng-info" wrapText="true" />
+               <Region VBox.vgrow="ALWAYS" />
+
+               <HBox alignment="CENTER" spacing="16.0">
+                  <Button maxWidth="Infinity" onAction="#onUndo" prefHeight="62.0" styleClass="ng-ghost-button" text="↶   Zpět" HBox.hgrow="ALWAYS" />
+                  <Button maxWidth="Infinity" onAction="#onNewGame" prefHeight="62.0" styleClass="ng-ghost-button" text="⟲   Nová hra" HBox.hgrow="ALWAYS" />
                </HBox>
             </VBox>
          </HBox>
       </StackPane>
    </center>
+
+   <!-- HORNÍ LIŠTA -->
+   <top>
+      <HBox alignment="CENTER_LEFT" managed="${setupBox.visible}" spacing="20.0" styleClass="ng-topbar" visible="${setupBox.visible}" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets bottom="12.0" left="14.0" right="14.0" top="12.0" />
+         </padding>
+         <Button onAction="#onBack" styleClass="ng-menu-button" text="☰   Menu" />
+         <Label fx:id="titleLabel" styleClass="ng-title" text="🎯  Šipky – nová hra" />
+      </HBox>
+   </top>
 </BorderPane>

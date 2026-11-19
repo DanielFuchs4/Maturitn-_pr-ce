@@ -1,4 +1,5 @@
 package com.example.maturitni_prace;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,8 +15,11 @@ public class MainApplication extends Application {
 
     @Override
     public void start(Stage stage) {
-        scene = new Scene(load("menu.fxml"), 900, 600);
+        scene = new Scene(load("menu.fxml"), 1280, 800);
         stage.setTitle("Počítadlo skóre");
+        stage.setMinWidth(1000);
+        stage.setMinHeight(700);
+        stage.setMaximized(true);
         stage.setScene(scene);
         stage.show();
     }

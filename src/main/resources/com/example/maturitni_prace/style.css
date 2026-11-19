@@ -1,50 +1,376 @@
-
-.menu-root {
-    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #0f2027, #203a43 50%, #2c5364);
+/* ===== Základ a společné prvky ===== */
+.ng-root {
+    -fx-background-color: linear-gradient(to bottom, #0b1736, #060d21);
+    -fx-font-family: "Segoe UI", system-ui, sans-serif;
 }
 
-.menu-title {
-    -fx-font-size: 46px;
-    -fx-font-weight: bold;
+/* Horní lišta */
+.ng-topbar {
+    -fx-background-color: rgba(255, 255, 255, 0.03);
+    -fx-border-color: transparent transparent rgba(120, 160, 255, 0.15) transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.ng-title {
     -fx-text-fill: white;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 10, 0, 0, 3);
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
 }
 
-.menu-subtitle {
-    -fx-font-size: 18px;
-    -fx-text-fill: #b8c7d1;
-}
-
-.game-card {
-    -fx-background-color: rgba(255, 255, 255, 0.10);
-    -fx-background-radius: 24;
-    -fx-border-color: rgba(255, 255, 255, 0.25);
-    -fx-border-radius: 24;
-    -fx-border-width: 1.5;
-    -fx-padding: 30 45 30 45;
+.ng-menu-button {
+    -fx-background-color: rgba(255, 255, 255, 0.07);
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-background-radius: 10;
+    -fx-padding: 10 18 10 18;
     -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.35), 20, 0.1, 0, 8);
+}
+.ng-menu-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.15);
 }
 
-.game-card:hover {
-    -fx-background-color: rgba(255, 255, 255, 0.20);
-    -fx-border-color: #4cc9f0;
-    -fx-scale-x: 1.05;
-    -fx-scale-y: 1.05;
+/* Dekorativní kruhy na pozadí */
+.ng-deco-circle {
+    -fx-fill: transparent;
+    -fx-stroke: rgba(70, 120, 220, 0.25);
+    -fx-stroke-width: 6;
+}
+.ng-deco-circle-inner {
+    -fx-fill: rgba(80, 120, 200, 0.07);
+    -fx-stroke: rgba(120, 160, 230, 0.15);
+    -fx-stroke-width: 2;
 }
 
-.game-card:pressed {
-    -fx-scale-x: 0.98;
-    -fx-scale-y: 0.98;
+/* ===== Nastavení hry ===== */
+.ng-panel {
+    -fx-background-color: rgba(15, 28, 66, 0.85);
+    -fx-background-radius: 18;
+    -fx-border-color: rgba(100, 140, 230, 0.30);
+    -fx-border-radius: 18;
+    -fx-border-width: 1.5;
 }
 
-.card-title {
+.ng-panel-icon {
+    -fx-text-fill: #4cc9f0;
+    -fx-font-size: 28px;
+}
+.ng-panel-title {
+    -fx-text-fill: white;
     -fx-font-size: 28px;
     -fx-font-weight: bold;
+}
+.ng-panel-line {
+    -fx-background-color: rgba(120, 160, 255, 0.25);
+    -fx-pref-height: 1;
+    -fx-min-height: 1;
+    -fx-max-height: 1;
+}
+.ng-label {
     -fx-text-fill: white;
+    -fx-font-size: 20px;
 }
 
-.card-desc {
-    -fx-font-size: 14px;
-    -fx-text-fill: #b8c7d1;
+.ng-name-field {
+    -fx-background-color: rgba(6, 14, 40, 0.9);
+    -fx-border-color: #1a6bff;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: rgba(255, 255, 255, 0.55);
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 18 0 18;
+}
+.ng-name-field:focused {
+    -fx-effect: dropshadow(gaussian, rgba(26, 107, 255, 0.65), 16, 0.3, 0, 0);
+}
+
+.ng-secondary-button {
+    -fx-background-color: rgba(255, 255, 255, 0.07);
+    -fx-border-color: rgba(120, 160, 255, 0.25);
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-text-fill: white;
+    -fx-font-size: 17px;
+    -fx-padding: 0 22 0 22;
+    -fx-cursor: hand;
+}
+.ng-secondary-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Seznam hráčů */
+.ng-list {
+    -fx-background-color: rgba(6, 14, 40, 0.8);
+    -fx-background-radius: 14;
+    -fx-border-color: rgba(100, 140, 230, 0.25);
+    -fx-border-radius: 14;
+    -fx-padding: 8;
+}
+.ng-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-padding: 12 16 12 16;
+    -fx-background-radius: 10;
+}
+.ng-list .list-cell:filled:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+}
+.ng-list .list-cell:filled:selected {
+    -fx-background-color: #1a6bff;
+    -fx-text-fill: white;
+}
+.ng-list .scroll-bar {
+    -fx-background-color: transparent;
+}
+.ng-empty-icon {
+    -fx-text-fill: rgba(140, 170, 230, 0.6);
+    -fx-font-size: 72px;
+}
+.ng-empty-text {
+    -fx-text-fill: #9fb0d8;
+    -fx-font-size: 20px;
+}
+
+/* ComboBox */
+.ng-combo {
+    -fx-background-color: rgba(6, 14, 40, 0.9);
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(120, 160, 255, 0.30);
+    -fx-border-radius: 12;
+    -fx-font-size: 20px;
+}
+.ng-combo .list-cell {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-background-color: transparent;
+    -fx-padding: 6 12 6 12;
+}
+.ng-combo .arrow-button {
+    -fx-background-color: transparent;
+}
+.ng-combo .arrow {
+    -fx-background-color: white;
+}
+.ng-combo .combo-box-popup .list-view {
+    -fx-background-color: #0f1c42;
+    -fx-border-color: rgba(120, 160, 255, 0.30);
+}
+.ng-combo .combo-box-popup .list-view .list-cell {
+    -fx-text-fill: white;
+    -fx-background-color: #0f1c42;
+}
+.ng-combo .combo-box-popup .list-view .list-cell:hover,
+.ng-combo .combo-box-popup .list-view .list-cell:selected {
+    -fx-background-color: #1a6bff;
+}
+
+/* Tlačítko Začít hru */
+.ng-start-button {
+    -fx-background-color: linear-gradient(to bottom, #1e7bff, #0a54d6);
+    -fx-background-radius: 14;
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(26, 107, 255, 0.55), 18, 0.25, 0, 3);
+}
+.ng-start-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #3b8cff, #1363ee);
+}
+.ng-start-button:pressed {
+    -fx-background-color: #0a54d6;
+}
+
+/* ===== PROBÍHAJÍCÍ HRA ===== */
+.ng-game-panel,
+.ng-score-panel {
+    -fx-background-color: rgba(15, 28, 66, 0.88);
+    -fx-background-radius: 22;
+    -fx-border-color: rgba(100, 140, 230, 0.30);
+    -fx-border-radius: 22;
+    -fx-border-width: 1.5;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.45), 24, 0.15, 0, 8);
+}
+
+/* Ukazatel kola */
+.ng-round-line {
+    -fx-background-color: linear-gradient(to right, transparent, rgba(120, 160, 255, 0.45), transparent);
+    -fx-pref-height: 2;
+    -fx-min-height: 2;
+    -fx-max-height: 2;
+}
+.ng-round-big {
+    -fx-text-fill: #8bb4ff;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-background-color: rgba(26, 107, 255, 0.15);
+    -fx-border-color: rgba(100, 150, 255, 0.35);
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-padding: 6 22 6 22;
+}
+
+/* Kartičky ostatních hráčů (zvětšené skóre) */
+.ng-other-card {
+    -fx-background-color: rgba(6, 14, 40, 0.80);
+    -fx-background-radius: 14;
+    -fx-border-color: rgba(100, 140, 230, 0.30);
+    -fx-border-radius: 14;
+    -fx-padding: 10 24 10 24;
+    -fx-min-width: 125px;
+}
+.ng-other-name {
+    -fx-text-fill: #9fb0d8;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+.ng-other-score {
+    -fx-text-fill: white;
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+}
+
+/* Aktuální hráč, pokusy (121) a zbývající skóre */
+.ng-current-name-big {
+    -fx-text-fill: #4cc9f0;
+    -fx-font-size: 40px;
+    -fx-font-weight: bold;
+}
+.ng-attempts-badge {
+    -fx-text-fill: #ffd166;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-background-color: rgba(255, 209, 102, 0.14);
+    -fx-border-color: rgba(255, 209, 102, 0.45);
+    -fx-border-radius: 16;
+    -fx-background-radius: 16;
+    -fx-padding: 5 20 5 20;
+}
+.ng-remaining {
+    -fx-text-fill: white;
+    -fx-font-size: 128px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(30, 123, 255, 0.45), 25, 0.3, 0, 0);
+}
+
+/* Statistické karty dole vlevo */
+.ng-stat-card {
+    -fx-background-color: rgba(6, 14, 40, 0.78);
+    -fx-background-radius: 16;
+    -fx-border-color: rgba(100, 140, 230, 0.25);
+    -fx-border-radius: 16;
+    -fx-padding: 16 24 16 24;
+}
+.ng-stat-caption {
+    -fx-text-fill: #9fb0d8;
+    -fx-font-size: 16px;
+}
+.ng-stat-value {
+    -fx-text-fill: white;
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+}
+
+/* Pravý panel – ikona 3 šipek */
+.ng-dart-flight {
+    -fx-fill: linear-gradient(to bottom, #4cc9f0, #1a6bff);
+    -fx-stroke: rgba(255, 255, 255, 0.75);
+    -fx-stroke-width: 1.1;
+    -fx-effect: dropshadow(gaussian, rgba(76, 201, 240, 0.45), 10, 0.3, 0, 2);
+}
+.ng-dart-rib {
+    -fx-stroke: rgba(255, 255, 255, 0.65);
+    -fx-stroke-width: 1.3;
+}
+.ng-dart-shaft {
+    -fx-fill: #142b66;
+    -fx-stroke: #4cc9f0;
+    -fx-stroke-width: 0.8;
+}
+.ng-dart-barrel {
+    -fx-fill: linear-gradient(to right, #8fa3cc, #ffffff, #6d82ad);
+    -fx-stroke: rgba(255, 255, 255, 0.5);
+    -fx-stroke-width: 0.7;
+}
+.ng-dart-grip {
+    -fx-stroke: #1e2d52;
+    -fx-stroke-width: 1.2;
+}
+.ng-dart-tip {
+    -fx-fill: #e2ecff;
+}
+
+.ng-glow-line {
+    -fx-background-color: linear-gradient(to right, transparent, #1e7bff, transparent);
+    -fx-pref-height: 2;
+    -fx-min-height: 2;
+    -fx-max-height: 2;
+}
+
+.ng-score-caption {
+    -fx-text-fill: #dce6ff;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+.ng-score-field {
+    -fx-background-color: rgba(6, 14, 40, 0.92);
+    -fx-background-radius: 16;
+    -fx-border-color: #1a6bff;
+    -fx-border-width: 2;
+    -fx-border-radius: 16;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: rgba(255, 255, 255, 0.35);
+    -fx-font-size: 38px;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+}
+.ng-score-field:focused {
+    -fx-border-color: #4cc9f0;
+    -fx-effect: dropshadow(gaussian, rgba(76, 201, 240, 0.55), 20, 0.3, 0, 0);
+}
+
+.ng-confirm-button {
+    -fx-background-color: linear-gradient(to bottom, #1e7bff, #0a54d6);
+    -fx-background-radius: 16;
+    -fx-text-fill: white;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(26, 107, 255, 0.55), 20, 0.3, 0, 4);
+}
+.ng-confirm-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #3b8cff, #1363ee);
+}
+.ng-confirm-button:pressed {
+    -fx-background-color: #0a54d6;
+}
+
+/* Červené upozornění při chybném zadání */
+.ng-info {
+    -fx-text-fill: #ff3b30;
+    -fx-font-size: 21px;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(255, 59, 48, 0.35), 10, 0.2, 0, 1);
+}
+
+/* Spodní tlačítka – stejná barva jako Potvrdit a větší text */
+.ng-ghost-button {
+    -fx-background-color: linear-gradient(to bottom, #1e7bff, #0a54d6);
+    -fx-background-radius: 14;
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 24 0 24;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(26, 107, 255, 0.45), 14, 0.25, 0, 3);
+}
+.ng-ghost-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #3b8cff, #1363ee);
+}
+.ng-ghost-button:pressed {
+    -fx-background-color: #0a54d6;
 }
